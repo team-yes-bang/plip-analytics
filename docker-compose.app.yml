@@ -1,0 +1,27 @@
+services:
+  analytics:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: plip-service-analytics
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+      kafka:
+        condition: service_started
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+      DB_USERNAME: ${DB_USERNAME:-root}
+      DB_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: plip_analytics
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      EUREKA_CLIENT_ENABLED: "true"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:-http://eureka-server:8761/eureka/}
+      EUREKA_INSTANCE_HOSTNAME: analytics
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
+    networks:
+      - plip-net

@@ -1,0 +1,30 @@
+include:
+  - docker-compose.app.yml
+
+networks:
+  plip-net:
+    driver: bridge
+
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: plip-analytics-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-plip_analytics}
+    ports:
+      - "3308:3306"
+    volumes:
+      - plip_analytics_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+    networks:
+      - plip-net
+
+volumes:
+  plip_analytics_mysql_data:
