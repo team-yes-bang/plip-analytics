@@ -28,7 +28,6 @@ public class AgitSearchController {
 			@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "20") int size
 	) {
-		AuthenticatedActor.requireUserUuid();
 		AgitSearchPageDto result = searchAgitsUseCase.search(q, sort, page, size);
 		return AgitSearchPageResponse.builder()
 				.items(result.getItems().stream()
