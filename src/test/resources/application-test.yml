@@ -9,6 +9,9 @@ spring:
       ddl-auto: create-drop
   kafka:
     bootstrap-servers: localhost:9092
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
   cloud:
     compatibility-verifier:
       enabled: false
